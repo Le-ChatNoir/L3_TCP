@@ -1,0 +1,823 @@
+MAN(1)          Utilitaires de l'afficheur des pages de manuel          MAN(1)
+
+
+
+NOM
+       man - Interface de consultation des manuels de référence en ligne
+
+SYNOPSIS
+       man  [-C fichier] [-d] [-D] [--warnings[=avertissements]] [-R encodage]
+       [-L locale] [-m système[,...]] [-M chemin] [-S  liste]  [-e  extension]
+       [-i|-I]  [--regex|--wildcard]  [--names-only] [-a] [-u] [--no-subpages]
+       [-P  afficheur]  [-r  invite]  [-7]  [-E  encodage]  [--no-hyphenation]
+       [--no-justification]  [-p  chaîne]  [-t] [-T[périphérique]] [-H[naviga‐
+       teur]] [-X[ppp]] [-Z] [[section] page ...] ...
+       man -k [options d'apropos] expression_rationnelle ...
+       man -K [-w|-W] [-S liste] [-i|-I] [--regex] [section] term ...
+       man -f [options de whatis] page ...
+       man -l [-C fichier] [-d] [-D] [--warnings[=avertissements]]  [-R  enco‐
+       dage]  [-L  locale]  [-P  afficheur] [-r invite] [-7] [-E encodage] [-p
+       chaîne] [-t] [-T[périphérique]] [-H[navigateur]] [-X[ppp]] [-Z] fichier
+       ...
+       man -w|-W [-C fichier] [-d] [-D] page ...
+       man -c [-C fichier] [-d] [-D] page ...
+       man [-?V]
+
+DESCRIPTION
+       man  est  le programme de visualisation des pages de manuel. Chacun des
+       arguments page, indiqué dans la ligne de commande  de  man,  porte,  en
+       principe,  le nom d'un programme, d'un utilitaire ou d'une fonction. La
+       page de manuel correspondant à chaque argument  est  alors  trouvée  et
+       affichée.  Si  une section est précisée alors man limite la recherche à
+       cette section. Par défaut, il recherche dans toutes les sections dispo‐
+       nibles  en suivant un ordre prédéfini (« 1 n l 8 3 2 3posix 3pm 3perl 5
+       4 9 6 7 » par défaut, à moins d’être écrasée par la  directive  SECTION
+       dans  /etc/manpath.config). Il n'affiche que la première page de manuel
+       trouvée, même si d'autres pages de manuel existent dans  d'autres  sec‐
+       tions.
+
+       Le  tableau  ci-dessous  indique le numéro des sections de manuel ainsi
+       que le type de pages qu'elles contiennent.
+
+
+       1   Programmes exécutables ou commandes de l'interpréteur de  commandes
+           (shell)
+       2   Appels système (fonctions fournies par le noyau)
+       3   Appels  de  bibliothèque  (fonctions fournies par les bibliothèques
+           des programmes)
+       4   Fichiers spéciaux (situés généralement dans /dev)
+       5   Formats des fichiers et conventions. Par exemple /etc/passwd
+       6   Jeux
+       7   Divers (y compris les macropaquets et les conventions), par exemple
+           man(7), groff(7)
+       8   Commandes  de gestion du système (généralement réservées au superu‐
+           tilisateur)
+       9   Sous-programmes du noyau [hors standard]
+
+       Une page de manuel est constituée de plusieurs sections.
+
+       Parmi les noms de section conventionnels  se  trouvent  NOM,  SYNOPSIS,
+       CONFIGURATION,  DESCRIPTION,  OPTIONS, CODE DE RETOUR, VALEUR RENVOYÉE,
+       ERREURS, ENVIRONNEMENT, FICHIERS, VERSIONS, CONFORMITÉ, NOTES,  BOGUES,
+       EXEMPLE, AUTEURS et VOIR AUSSI.
+
+       Les conventions suivantes s'appliquent à la section SYNOPSIS et peuvent
+       être utilisées comme un guide pour les autres sections.
+
+
+       texte gras         à taper exactement comme indiqué ;
+       texte italique     à remplacer par l'argument approprié ;
+       [-abc]             tous les arguments entre [ ] sont facultatifs ;
+       -a|-b              les options séparées par | ne peuvent pas être  uti‐
+                          lisées simultanément ;
+       argument ...       argument peut être répété ;
+       [expression] ...   toute  l'expression située à l'intérieur de [ ] peut
+                          être répétée.
+
+       Le rendu exact dépend du dispositif d'affichage. Par  exemple,  man  ne
+       sera  généralement  pas capable d'afficher les italiques dans un termi‐
+       nal, et utilisera typiquement le soulignement ou la coloration du texte
+       à la place.
+
+       Le  synopsis  de la commande ou de la fonction est un modèle qui permet
+       de représenter toutes les utilisations possibles. Dans certains cas, il
+       est recommandé d'illustrer plusieurs utilisations exclusives comme dans
+       la partie SYNOPSIS de cette page de manuel.
+
+EXEMPLES
+       man ls
+           Affiche la page de manuel de l'élément (du programme) ls.
+
+       man -a intro
+           Affiche, successivement, toutes les  pages  de  manuel  disponibles
+           nommées  « intro ».  Il est possible de s'arrêter après l'affichage
+           de chaque page ou de sauter n'importe quelle page.
+
+       man -t alias | lpr -Pps
+           Formate la page du manuel de  « alias »  (une  page  de  manuel  de
+           l'interpréteur  de  commandes) selon le format par défaut (troff ou
+           groff) et la redirige vers l'imprimante nommée  « ps ».  Le  format
+           généré,  par  défaut, pour groff est habituellement PostScript. man
+           --help devrait préciser le format associé à l'option -t.
+
+       man -l -Tdvi ./toto.1x.gz > ./toto.1x.dvi
+           Cette commande décompresse puis met en  forme  la  page  de  manuel
+           source nroff nommée ./toto.1x.gz. Elle l'enregistre ensuite dans un
+           fichier « device independent (dvi) ». La redirection est nécessaire
+           car  l'option  -T produit un envoi vers la sortie standard (stdout)
+           sans aucun programme d'affichage. Le résultat peut  être  visualisé
+           avec un programme tel que xdvi ou être ultérieurement transformé au
+           format PostScript grâce à un programme comme dvips.
+
+       man -k printf
+           Recherche la description courte et le nom des pages de manuel  com‐
+           portant  le  mot-clé  printf,  utilisé comme une expression ration‐
+           nelle, puis affiche tout ce qui a été trouvé.  Cette  commande  est
+           équivalente à apropos -r printf.
+
+       man -f smail
+           Recherche  les pages de manuel nommées smail et en affiche les des‐
+           criptions courtes. Équivalent à whatis -r smail.
+
+VUE D'ENSEMBLE
+       Beaucoup d'options sont disponibles avec man afin de donner  autant  de
+       souplesse  que possible à l'utilisateur. Des modifications peuvent être
+       apportées au chemin de recherche, à l'ordre d'exploration des sections,
+       au programme d'affichage ainsi qu'à d'autres éléments et comportements.
+       Tout ceci est détaillé ci-après.
+
+       Si elles ne sont pas vides,  diverses  variables  d'environnement  sont
+       exploitées  pour  influer sur le fonctionnement de man. Il est possible
+       de donner à la variable « fourre-tout » $MANOPT n'importe quelle chaîne
+       de  caractères  respectant  le format de la ligne de commande. La seule
+       condition est que toutes les espaces, utilisées en tant  qu'élément  de
+       l'argument  d'une  option,  soient protégés, c'est-à-dire précédées par
+       une contre-oblique  « \ »  (antislash).  man  analysera  $MANOPT  avant
+       d'analyser  sa propre ligne de commande. Ainsi, les options exigeant un
+       argument seront remplacées par les mêmes options trouvées sur la  ligne
+       de  commande.  Pour  ignorer  toutes  les options placées dans $MANOPT,
+       l'option -D peut être indiquée comme option initiale  de  la  ligne  de
+       commande. Ceci permettra à man d'« oublier » les options indiquées dans
+       $MANOPT. Toutefois, celles-ci doivent quand même être valides.
+
+       Les utilitaires de l'afficheur des pages de manuel de man-db  font  une
+       large  utilisation des bases de données d'indexation. Ces bases de don‐
+       nées forment un « cache » du système de fichiers qui contient les pages
+       de  manuel. Elles contiennent des informations telles que l'emplacement
+       de chaque page de manuel et  la  description  courte  de  leur  contenu
+       (obtenue  par whatis). Ceci est fait pour permettre à man de s'exécuter
+       plus rapidement que s'il devait rechercher à chaque fois  ces  informa‐
+       tions  dans  le  système  de fichiers. Si l'option -u est utilisée, man
+       vérifiera que ces bases de données  d'indexation  demeurent  cohérentes
+       afin  d'éviter  d'avoir recours manuellement à la mise à jour des bases
+       de données textuelles traditionnelles de whatis.
+
+       Si man ne trouve pas la base  de  données  d'indexation,  produite  par
+       mandb,  pour  une structure hiérarchique spécifique de pages de manuel,
+       il cherchera les pages de manuel demandées, bien que l'utilisation d'un
+       mécanisme semblable à la commande glob(3) soit nécessaire pour chercher
+       dans cette hiérarchie. Si whatis ou apropos ne trouvent pas la base  de
+       données d'indexation ils essaieront d'extraire l'information depuis une
+       base de données whatis traditionnelle.
+
+       Ces utilitaires acceptent les fichiers source compressés  nroff  ayant,
+       par défaut, les extensions .Z, .z et .gz. Il est possible de prendre en
+       charge n'importe quelle extension de compression, mais  cette  informa‐
+       tion  doit  être  fournie  au  moment  de la compilation. En outre, par
+       défaut, toutes les pages « cat » produites sont compressées avec  gzip.
+       Chaque  structure  hiérarchique  « globale »  de  pages de manuel comme
+       /usr/share/man ou /usr/X11R6/man peut contenir un répertoire quelconque
+       pour  stocker la structure hiérarchique de pages « cat ». Traditionnel‐
+       lement les pages « cat » sont stockées dans la même  structure  hiérar‐
+       chique  que  les  pages  de manuel, mais, pour des raisons comme celles
+       indiquées dans la norme  de  structuration  hiérarchique  des  fichiers
+       « File  Hierarchy Standard (FHS) », il peut être préférable de les sto‐
+       cker ailleurs. Pour obtenir des précisions sur la façon  de  le  faire,
+       voir  manpath(5). Pour des précisions sur les raisons de le faire, lire
+       la norme.
+
+       Les pages de manuel traduites sont prises en charge par  ce  programme.
+       Ces  pages  de manuel sont accessibles dans votre langue maternelle (si
+       la traduction est disponible sur votre système) par l'intermédiaire des
+       fonctions  locale. Pour activer cette fonctionnalité, il est nécessaire
+       d'indiquer avec $LC_MESSAGES ou avec $LANG (ou avec une autre  variable
+       d'environnement  suivant  le  système) la langue ou le dialecte désiré,
+       selon le format décrit dans POSIX 1003.1 :
+
+       <langue>[_<pays>[.<jeu_de_caractères>[,<version>]]]
+
+       Si la page désirée est disponible dans  votre  « locale »  (dans  votre
+       langue  ou votre dialecte), elle sera affichée au lieu de la page stan‐
+       dard, écrite le plus souvent dans le dialecte anglo-américain (en_US).
+
+       Ce programme prend également en charge  les  messages  traduits.  Cette
+       prise  en  charge peut être activée de la même manière, à condition que
+       la traduction soit disponible. Si  vous  constatez  que  les  pages  de
+       manuel  et  les  messages  fournis avec ce programme ne sont pas dispo‐
+       nibles dans votre langue maternelle et si  vous  voulez  les  réaliser,
+       contactez le responsable qui coordonnera cette activité.
+
+       Pour  obtenir  des  renseignements  concernant d'autres fonctionnalités
+       disponibles avec cet afficheur de manuel, lire  les  documents  fournis
+       avec le programme.
+
+COMPORTEMENT PAR DÉFAUT
+       man  recherche  les pages de manuel dans les bases de données d'indexa‐
+       tion. Si l'option -u est indiquée, un contrôle de cohérence  des  bases
+       de  données  d'indexation  est  effectué  afin  de  s'assurer  qu'elles
+       reflètent exactement le contenu du système de fichiers. Si cette option
+       est toujours utilisée, il n'est, en principe, pas nécessaire d'exécuter
+       mandb, une fois que les bases de données d'indexation auront  été  ini‐
+       tialement créées, sauf en cas d'altération de l'une d'elles. Cependant,
+       le contrôle de cohérence des bases de données  d'indexation  peut  être
+       long  sur  des systèmes où beaucoup de pages de manuel sont installées.
+       C'est pour cette raison que le contrôle de cohérence n'est pas  exécuté
+       par  défaut,  laissant à l'administrateur du système le soin d'exécuter
+       mandb chaque semaine ou de laisser les bases  de  données  d'indexation
+       telles  quelles. Pour prévenir les problèmes provoqués par les bases de
+       données d'indexation périmées, man  se  retournera  vers  l'utilisation
+       d'un  mécanisme  semblable à la commande glob(3) si une consultation de
+       la base de données d'indexation  échoue,  exactement  comme  si  aucune
+       n'existait.
+
+       Une fois qu'une page de manuel a été trouvée, une vérification est exé‐
+       cutée pour déterminer s'il existe un fichier  « cat »  préformaté  plus
+       récent  que  le  fichier au format nroff. Si tel est le cas, le fichier
+       « cat » est (généralement) décompressé puis présenté par un  afficheur.
+       L'afficheur  à utiliser peut être précisé, sinon l'afficheur par défaut
+       sera utilisé (voir l'option -p  pour  plus  de  précisions).  Si  aucun
+       fichier  « cat »  plus  récent  que  le  fichier nroff n'est trouvé, le
+       fichier nroff est traité par divers programmes  et  affiché  immédiate‐
+       ment.
+
+       Si  un fichier « cat » peut être produit (si un répertoire relatif pour
+       les « cat » existe avec les droits appropriés) alors man compressera et
+       enregistrera le fichier « cat » en arrière plan.
+
+       Les filtres sont déterminés de plusieurs façons. Tout d'abord, l'option
+       -p ou la variable d'environnement $MANROFFSEQ  sont  vérifiées.  Si  -p
+       n'est  pas  employée et que la variable d'environnement est vide, alors
+       la première ligne du fichier nroff est analysée à  la  recherche  d'une
+       chaîne  de  caractères  indiquant le préprocesseur à utiliser. Pour que
+       l'indication du préprocesseur soit valide, la première ligne doit  res‐
+       sembler à :
+
+       '\" <chaîne>
+
+       dans laquelle chaîne peut être n'importe quelle combinaison de lettres,
+       décrite par l'option -p ci-dessous.
+
+       Si aucune des méthodes  précédentes  ne  fournit  d'indication  sur  le
+       filtre à utiliser, une valeur par défaut est utilisée.
+
+       Une chaîne de formatage est constituée et exécutée à partir des filtres
+       et du format de départ (nroff ou [tg]roff avec l'option -t). Toutefois,
+       si  un programme exécutable mandb_nfmt (ou mandb_tfmt avec l'option -t)
+       existe à la racine de l'arborescence des pages de manuel, c'est lui qui
+       sera  exécuté.  Il  recevra en argument le fichier source de la page de
+       manuel, la chaîne de préprocesseur et, éventuellement, le  périphérique
+       indiqué par les arguments de -T ou -E.
+
+OPTIONS
+       La  duplication  d'options  sans  argument dans la ligne de commande ou
+       dans $MANOPT (ou dans les deux) n'est pas gênante. Pour les options qui
+       requièrent un argument, chaque duplication remplace la valeur précédem‐
+       ment donnée à l'argument.
+
+   Options générales
+       -C fichier, --config-file=fichier
+              Utilise le fichier de configuration indiqué au lieu  du  fichier
+              ~/.manpath par défaut.
+
+       -d, --debug
+              Affiche les informations de mise au point.
+
+       -D, --default
+              Cette  option  est normalement utilisée en toute première option
+              et réinitialise les comportements de man  à  leurs  valeurs  par
+              défaut. Son utilisation réinitialise les options qui auraient pu
+              être modifiées par les valeurs placées dans $MANOPT. Toutes  les
+              options qui suivent -D auront leur effet habituel.
+
+       --warnings[=avertissements]
+              Active les avertissements de groff. C'est utilisable pour réali‐
+              ser des vérifications sur le texte source des pages  de  manuel.
+              avertissements est une liste de noms d'avertissement séparés par
+              des virgules ; si rien n'est fourni, la valeur  par  défaut  est
+              « mac ».  Voir  le nœud « Warnings » d'info groff pour une liste
+              de noms d'avertissement disponibles.
+
+   Modes opératoires principaux
+       -f, --whatis
+              Équivalent à whatis. Affiche, si elle est disponible, une courte
+              description  de  la  page de manuel. Voir whatis(1) pour obtenir
+              des précisions.
+
+       -k, --apropos
+              Équivalent à apropos. Cherche la description courte des pages de
+              manuel  correspondant  au mot-clé et affiche toutes celles qu'il
+              trouve. Voir apropos(1) pour obtenir des précisions.
+
+       -K, --global-apropos
+              Recherche le texte dans toutes les pages de  manuel.  Il  s'agit
+              d'une  recherche  par  force  brute  qui  peut prendre un peu de
+              temps ; si possible, vous  devriez  indiquer  une  section  pour
+              réduire  le  nombre  de  pages  à  prendre en considération. Les
+              termes de la recherche peuvent  être  de  simples  chaînes  (par
+              défaut)  ou des expressions rationnelles si l'option --regex est
+              utilisée.
+
+       -l, --local-file
+              Active le mode « local ». Formate et  affiche  les  fichiers  de
+              manuels  locaux  plutôt que de rechercher parmi la collection de
+              manuels du système. Chaque page de manuel  indiqué  en  argument
+              sera  interprétée comme un fichier source nroff au format appro‐
+              prié. Aucun fichier « cat » n'est produit. Si un « - »  apparaît
+              comme  argument,  l'entrée  standard  est lue. Quand l'option -l
+              n'est pas employée, et que man ne trouve pas la  page  demandée,
+              avant  d'afficher  le message d'erreur, il essaie de faire comme
+              si cette option avait été indiquée en utilisant  le  nom  de  la
+              page demandée comme nom de fichier et en recherchant une corres‐
+              pondance exacte dans le répertoire actuel.
+
+       -w, --where, --path, --location
+              N'affiche pas les pages de manuel mais affiche le ou les  empla‐
+              cements  des  fichiers  source nroff qui auraient dû être mis en
+              forme.
+
+       -W, --where-cat, --location-cat
+              N'affiche pas les pages de manuel mais affiche le ou les  empla‐
+              cements  des  fichiers « cat » qui auraient dû être affichés. Si
+              -w et -W sont indiqués conjointement, les deux affichages seront
+              séparés par une espace.
+
+       -c, --catman
+              Cette  option  n'est pas d'un usage général et devrait seulement
+              être utilisée par le programme catman.
+
+       -R encodage, --recode=encodage
+              Plutôt que de formater  la  page  de  manuel  comme  d'habitude,
+              affiche  le  code  source  converti en encodage indiqué. Si vous
+              connaissez déjà l'encodage du fichier source, vous pouvez  aussi
+              utiliser  directement manconv(1). Cependant, cette option permet
+              de convertir plusieurs pages de manuel vers un  unique  encodage
+              sans  devoir  explicitement  déclarer  l'encodage  de chacune, à
+              condition qu'elles soient déjà  installées  dans  une  structure
+              similaire à la hiérarchie des pages de manuel.
+
+   Trouver des pages de manuel
+       -L locale, --locale=locale
+              man  détermine  habituellement  la locale (NdT : la langue ou le
+              dialecte) actuelle par un appel à la fonction C setlocale(3) qui
+              consulte  diverses variables d'environnement, y compris $LC_MES‐
+              SAGES et $LANG. Pour remplacer temporairement la valeur définie,
+              utilisez  cette option. Elle fournit directement à man la chaîne
+              de caractères représentant la locale. Notez que cette valeur  ne
+              prendra  effet qu'à partir de la recherche des pages. Par consé‐
+              quent, les autres affichages,  tels  que  les  messages  d'aide,
+              seront toujours montrés dans la langue initialement déterminée.
+
+       -m système[,...], --systems=système[,...]
+              Si  le  système  a  accès aux pages de manuel d'un autre système
+              d'exploitation, celles-ci peuvent être consultées  en  utilisant
+              cette  option.  Pour  rechercher  une  page de manuel du système
+              d'exploitation NouveauSE, employez l'option -m NouveauSE.
+
+              Le système mentionné peut être une succession de  noms  de  sys‐
+              tèmes  d'exploitation,  séparés  par  des  virgules. Pour que la
+              recherche ait  lieu  également  sur  le  système  d'exploitation
+              natif, il faut inclure le nom système man dans la chaîne fournie
+              en argument (NdT : il semble que le système  natif  soit  inclus
+              dans  la  recherche,  même  en l'absence de cette valeur). Cette
+              option remplace la variable d'environnement $SYSTEM.
+
+       -M liste_de_chemins, --manpath=liste_de_chemins
+              Précise le chemin de recherche à utiliser. Par  défaut,  man  se
+              sert de manpath pour déterminer la liste des chemins d'accès aux
+              structures hiérarchiques de pages de manuel. Cette  option  rem‐
+              place la variable d'environnement $MANPATH et entraîne l'ineffi‐
+              cience de l'option -m.
+
+              Chaque chemin indiqué avec cette  option  doit  être  la  racine
+              d'une  hiérarchie  de  pages  de manuel, structurée en sections,
+              comme décrit dans le manuel  de  man-db,  sous  le  titre  « The
+              manual page system ». Pour consulter des pages de manuel situées
+              en dehors de telles structures hiérarchiques, utilisez  l'option
+              -l.
+
+       -S liste, -s liste, --sections=liste
+              Liste  ordonnée  des numéros des sections où doit être effectuée
+              la recherche, séparés par des deux-points ou des virgules. Cette
+              option remplace la variable d'environnement $MANSECT (l'écriture
+              -s existe par compatibilité avec System V).
+
+       -e sous-extension, --extension=sous-extension
+              Certains programmes installent  un  grand  nombre  de  pages  de
+              manuel  dans  la  structure hiérarchique principale des manuels,
+              comme celles qui accompagnent  le  programme  Tcl.  Pour  éviter
+              d'avoir  deux  pages  de manuel avec le même nom, comme exit(3),
+              toutes les pages de manuel de Tcl étaient  habituellement  assi‐
+              gnées  à  la section l. Comme ceci est maladroit, il est mainte‐
+              nant possible de mettre les pages dans la bonne section,  et  de
+              leur  assigner  une  extension  spécifique.  Dans le cas présent
+              exit(3tcl). En fonctionnement normal, man affichera  exit(3)  de
+              préférence  à  exit(3tcl).  Pour gérer cette situation et éviter
+              d'avoir à connaître la section où se trouve la page désirée,  il
+              est   maintenant   possible  de  donner  à  man  une  chaîne  de
+              sous-extension indiquent à quel programme  la  page  appartient.
+              Avec  l'exemple  ci-dessus, l'emploi de l'option -e tcl limitera
+              la recherche aux pages ayant une extension *tcl.
+
+       -i, --ignore-case
+              Ignore la casse lors de la recherche de la page de manuel. C'est
+              le comportement par défaut.
+
+       -I, --match-case
+              Cherche la page de manuel en tenant compte de la casse.
+
+       --regex
+              Montre toutes les pages ayant une partie de leur nom ou descrip‐
+              tion qui correspond à chaque argument page en tant qu'expression
+              rationnelle,  comme  avec  apropos(1). Puisqu'il n'existe pas de
+              façon raisonnable de choisir une « meilleure » page  lors  d'une
+              recherche d'expression rationnelle, cette option induit -a.
+
+       --wildcard
+              Montre toutes les pages ayant une partie de leur nom ou descrip‐
+              tion qui correspond à chaque  argument  page  en  utilisant  des
+              jokers (wildcards), comme avec apropos(1) --wildcard. L'argument
+              page doit correspondre à la totalité du nom ou  de  la  descrip‐
+              tion,  ou  aux  frontières  de  mot de la description. Puisqu'il
+              n'existe pas de façon raisonnable de choisir  une  « meilleure »
+              page lors d'une recherche de joker, cette option induit -a.
+
+       --names-only
+              Si  une  des options --regex ou --wildcard est utilisée, corres‐
+              pond seulement aux noms de pages, pas  aux  descriptions,  comme
+              avec whatis(1), sans effet sinon.
+
+       -a, --all
+              Par défaut, man s'arrêtera après avoir affiché la page de manuel
+              la plus appropriée trouvée. L'emploi de cette option force man à
+              afficher  toutes les pages de manuel dont les noms satisfont les
+              critères de recherche.
+
+       -u, --update
+              Cette option contraint man à faire une vérification, au « niveau
+              inœud »,  des  bases  de  données d'indexation afin de s'assurer
+              qu'elles reflètent bien la réalité du système de fichiers. Cette
+              option  n'aura  d'effet  que  si  man  est  installé avec le bit
+              setuid.
+
+       --no-subpages
+              Par défaut, man essaiera d'interpréter une paire de noms de page
+              de  manuel donnés sur la ligne de commande comme s'il s'agissait
+              d'un seul nom de page de manuel contenant un tiret ou  un  tiret
+              bas.  Cela prend en charge le motif habituel des programmes avec
+              plusieurs sous-commandes, leur permettant de fournir une page de
+              manuel  pour  chacune  accessible  avec  une syntaxe similaire à
+              celle utilisée pour appeler les sous-commandes. Par exemple :
+
+                $ man -aw git diff
+                /usr/share/man/man1/git-diff.1.gz
+
+              Pour désactiver ce  comportement,  utilisez  l'option  --no-sub‐
+              pages :
+
+                $ man -aw --no-subpages git diff
+                /usr/share/man/man1/git.1.gz
+                /usr/share/man/man3/Git.3pm.gz
+                /usr/share/man/man1/diff.1.gz
+
+   Contrôle du format d'affichage
+       -P afficheur, --pager=afficheur
+              Précise  l'afficheur  à  utiliser. Par défaut, man utilise pager
+              -s. Cette option remplace la variable d'environnement $MANPAGER,
+              elle-même  remplaçant  la  variable d'environnement $PAGER. Elle
+              n'est pas utilisable avec -f ou -k.
+
+              La valeur peut être juste un nom de  commande  ou  une  commande
+              avec des arguments, et peut utiliser les protections de l'inter‐
+              préteur (contre-obliques, guillemets simples ou doubles). L'uti‐
+              lisation de tubes pour relier plusieurs commandes n'est pas pos‐
+              sible ; si vous en avez  vraiment  besoin,  utilisez  un  script
+              enveloppe  qui  pourra prendre en argument le fichier à afficher
+              ou l'entrée standard.
+
+       -r invite, --prompt=invite
+              Si une version récente de less est utilisée comme afficheur, man
+              tentera  de régler l'invite ainsi que d'autres options. L'invite
+              par défaut ressemble à :
+
+               Manual Page nom(section) line x
+
+              dans laquelle nom représente le nom de la page de  manuel,  sec‐
+              tion  le  numéro  de  section  où  la page a été trouvée et x le
+              numéro de la ligne  actuelle.  C'est  réalisé  en  utilisant  la
+              variable d'environnement $LESS.
+
+              Fournir  -r avec une chaîne écrasera ce comportement par défaut.
+              La chaîne indiquée peut contenir  la  variable  de  substitution
+              $MAN_PN qui sera remplacée par le nom de la page de manuel affi‐
+              chée, accompagnée de son numéro de section, entouré par « ( » et
+              « ) ». La chaîne employée pour obtenir la valeur par défaut res‐
+              semble à :
+
+              \ Manual\ page\ \$MAN_PN\ ?ltline\ %lt?L/%L.:
+              byte\ %bB?s/%s..?\ (END):?pB\ %pB\\%..
+              (tapez h pour l'aide ou q pour quitter)
+
+              Cette chaîne a été coupée en trois lignes, ici, uniquement  pour
+              des  raisons  de lisibilité. Pour sa signification, consultez la
+              page de manuel de less(1). La chaîne de caractères  est  d'abord
+              évaluée  par  l'interpréteur  de commandes. Tous les guillemets,
+              apostrophes  inversées  et  contre-obliques  (antislash)  devant
+              apparaître  dans  l'invite doivent être précédés du caractère de
+              protection « \ ». La chaîne de caractères de  l'invite  peut  se
+              terminer  par  un  « $ »  protégé  qui  peut être suivi d'autres
+              options de less. Par défaut, man utilise l'option -ix8.
+
+              La variable d'environnement  $MANLESS  décrite  ci-dessous  peut
+              être  utilisée  pour  définir  une chaîne d’invite par défaut si
+              aucune n’est fournie sur la ligne de commande.
+
+       -7, --ascii
+              En visualisant une page de manuel en ascii(7) pur, sur un termi‐
+              nal  7 bits ou sur un émulateur de terminal, certains caractères
+              peuvent ne pas être affichés correctement lors de  l'utilisation
+              d'un descripteur de périphérique latin1(7) avec GNU nroff. Cette
+              option permet aux pages de manuel en ascii pur d'être  affichées
+              en  ascii  sur des périphériques latin1. Il n'y aura pas de tra‐
+              duction du texte en latin1. La table ci-dessous montre les  tra‐
+              ductions effectuées. Certains éléments de cette table ne peuvent
+              être  affichés  correctement  qu'en  utilisant  un  périphérique
+              latin1 conforme à GNU nroff.
+
+
+              Description        Octal   latin1   ascii
+              ──────────────────────────────────────────
+              trait d'union       255      ‐        -
+              point médian        267      ·        o
+              accent aigu         264      ´        '
+              symbole  de mul‐    327      ×        x
+              tiplication
+
+              Si la colonne latin1 est affichée correctement,  votre  terminal
+              peut  être  exploité  avec les caractères latin1 et cette option
+              est inutile. Si les colonnes latin1 et  ascii  sont  identiques,
+              soit  vous  avez  utilisé cette option, soit man n'a pas formaté
+              cette page en utilisant le descripteur de  périphérique  latin1.
+              Si la colonne latin1 est absente ou altérée, vous devriez utili‐
+              sez cette option.
+
+              Cette option est ignorée lors de l'usage des options -t, -H, -T,
+              ou -Z et peut être omise pour les nroff autres que ceux du GNU.
+
+       -E encodage, --encoding=encodage
+              Produit  une  sortie  avec  un  encodage de caractères autre que
+              celui par défaut. Pour des raisons de compatibilité  ascendante,
+              encodage  peut être un périphérique nroff tel que ascii, latin1,
+              ou utf8 ainsi qu'une réelle valeur d'encodage comme UTF-8.
+
+       --no-hyphenation, --nh
+              Normalement, nroff place un trait  d'union  lorsque  les  lignes
+              sont  coupées  même  si  les mots n'en contiennent pas, s'il est
+              nécessaire de le faire pour arranger les mots sur une ligne sans
+              espacements  excessifs. Cette option désactive la césure automa‐
+              tique, et les mots ne seront coupés que s'il contiennent déjà un
+              trait d'union.
+
+              Pour  éviter  à  nroff de couper un mot au mauvais endroit quand
+              vous écrivez une page de manuel, n'utilisez  pas  cette  option,
+              mais  consultez  plutôt  la documentation de nroff. Par exemple,
+              vous pouvez placer « \% » dans un mot pour indiquer  qu'il  peut
+              être  coupé  à  cet  endroit,  ou  « \% » au début d'un mot pour
+              l'empêcher d'être coupé.
+
+       --no-justification, --nj
+              Normalement, nroff  justifie  automatiquement  le  texte.  Cette
+              option  désactive la justification, laissant le texte aligné (ou
+              « ferré ») à droite, aussi appelé « drapeau gauche ».
+
+              Pour éviter à nroff de justifier certains paragraphes quand vous
+              écrivez  une  page  de manuel, n'utilisez pas cette option, mais
+              consultez plutôt la documentation de nroff.  Par  exemple,  vous
+              pouvez  utiliser  les  requêtes  « .na »,  « .nf »,  « .fi »  et
+              « .ad » pour désactiver temporairement le réglage et le remplis‐
+              sage.
+
+       -p chaîne, --preprocessor=chaîne
+              Indique  la  liste  des  préprocesseurs  à utiliser avant nroff,
+              troff ou groff. Toutes les implémentations ne disposent  pas  du
+              jeu  complet de préprocesseurs. Voici une liste de certains pré‐
+              processeurs, avec les lettres les désignant : eqn (e), grap (g),
+              pic (p),  tbl (t),  vgrind (v), refer (r). Cette option remplace
+              la variable d'environnement $MANROFFSEQ.  zsoelim  est  toujours
+              exécuté comme le tout premier préprocesseur.
+
+       -t, --troff
+              Utilise groff -mandoc pour mettre en forme la page de manuel sur
+              la sortie standard. Cette option n'est pas nécessaire  avec  -H,
+              -T, ou -Z.
+
+       -T[périphérique], --troff-device[=périphérique]
+              Cette  option  est utilisée pour modifier ce qui est produit par
+              groff (ou éventuellement par troff) afin d'être exploitable  par
+              un  périphérique  autre  que  le  périphérique par défaut. Cette
+              option implique l'option -t. Exemples de périphériques  (fournis
+              avec Groff-1.17) : dvi, latin1, ps, utf8, X75 et X100.
+
+       -H[navigateur], --html[=navigateur]
+              Cette  option  fera produire à groff une page au format HTML qui
+              sera ensuite affichée dans un navigateur web. Le choix du  navi‐
+              gateur  est  déterminé soit par l'argument optionnel navigateur,
+              s'il est indiqué, soit par la variable d'environnement  $BROWSER
+              ou  sinon  par la valeur par défaut indiquée lors de la compila‐
+              tion (habituellement lynx). Cette option induit -t et  ne  fonc‐
+              tionne qu'avec les troff GNU.
+
+       -X[ppp], --gxditview[=ppp]
+              Cette  option  affiche  la sortie de groff dans une fenêtre gra‐
+              phique en utilisant le programme gxditview. Le ppp  (points  par
+              pouce)  peut  être  75  (par  défaut),  75-12, 100 ou 100-12. La
+              variante « -12 » utilise une fonte de  12 points.  Cette  option
+              induit -T avec comme périphérique respectif X75, X75-12, X100 ou
+              X100-12.
+
+       -Z, --ditroff
+              groff exécutera troff puis utilisera le postprocesseur approprié
+              afin  de  produire  une  sortie  exploitable par le périphérique
+              choisi. Si groff -mandoc est groff alors cette option sera  pas‐
+              sée  à  groff  et  aucun  postprocesseur  ne sera exécuté. Cette
+              option induit -t.
+
+   Obtenir de l'aide
+       -?, --help
+              Affiche un message d'aide et s'arrête.
+
+       --usage
+              Affiche un court mode d'emploi et s'arrête.
+
+       -V, --version
+              Affiche le numéro de version.
+
+CODE DE RETOUR
+       0      Programme exécuté sans erreur.
+
+       1      Erreur d'utilisation, de syntaxe ou de fichier de configuration.
+
+       2      Erreur d'exécution.
+
+       3      Un processus fils a produit une valeur de retour non nulle.
+
+       16     Au moins une des pages ou un des fichiers ou  un  des  mots-clés
+              n'existe pas ou n'a pas été trouvé.
+
+ENVIRONNEMENT
+       MANPATH
+              Si $MANPATH est définie, sa valeur est exploitée comme le chemin
+              de recherche des pages de manuel.
+
+       MANROFFOPT
+              Le contenu de $MANROFFOPT est ajouté à la ligne  de  commande  à
+              chaque  fois  que  man  appelle  le processeur de format (nroff,
+              troff ou groff).
+
+       MANROFFSEQ
+              Si $MANROFFSEQ est définie, sa valeur est exploitée pour  déter‐
+              miner  l'ensemble  des  préprocesseurs à appliquer à chacune des
+              pages de manuel. La liste des préprocesseurs est  dépendante  du
+              système utilisé.
+
+       MANSECT
+              Si  $MANSECT  est  définie, sa valeur est une liste de sections,
+              séparées par des deux-points.  Cette  liste  est  utilisée  pour
+              déterminer  les sections de manuel, et l’ordre, utilisés pour la
+              recherche. C’est « 1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7 »  par
+              défaut,  à  moins  d’être  écrasée par la directive SECTION dans
+              /etc/manpath.config.
+
+       MANPAGER, PAGER
+              Si $MANPAGER ou $PAGER est définie ($MANPAGER est  prioritaire),
+              sa  valeur  est  exploitée  en tant que nom du programme utilisé
+              pour afficher les pages de manuel. Par défaut, pager -s est uti‐
+              lisé.
+
+              La  valeur  peut  être  juste un nom de commande ou une commande
+              avec des arguments, et peut utiliser les protections de l'inter‐
+              préteur (contre-obliques, guillemets simples ou doubles). L'uti‐
+              lisation de tubes pour relier plusieurs commandes n'est pas pos‐
+              sible ;  si  vous  en  avez  vraiment besoin, utilisez un script
+              enveloppe qui pourra prendre en argument le fichier  à  afficher
+              ou l'entrée standard.
+
+       MANLESS
+              Si  $MANLESS  est  définie, sa valeur sera utilisée comme chaîne
+              d’invite par défaut de l'afficheur less, comme si elle avait été
+              passée  en utilisant l’option -r (donc toutes les occurrences du
+              texte $MAN_PN seront développées de la même façon). Par exemple,
+              si vous voulez obtenir dans tous les cas la chaîne d'invite « Ma
+              chaîne d'invite » donnez à $MANLESS  la  valeur  « -PsMa  chaîne
+              d'invite ». L’utilisation de l’option -r écrasera cette variable
+              d’environnement.
+
+       BROWSER
+              Si $BROWSER est définie, sa valeur est une  liste  de  commandes
+              séparées  par  des  deux-points.  Chaque élément de la liste est
+              utilisé pour essayer de lancer un navigateur web lors de  l'uti‐
+              lisation  de  man  --html. Dans chaque commande, %s est remplacé
+              par un nom de fichier contenant la page de manuel au format HTML
+              produite  à partir de groff, %% est remplacé par un simple signe
+              « % » et %c est remplacé par « : ».
+
+       SYSTEM Si $SYSTEM est définie, l'effet sera le même que si  on  l'avait
+              indiquée comme argument de l'option -m.
+
+       MANOPT Si  $MANOPT  est  définie, elle sera analysée préalablement à la
+              ligne de commande de man et son contenu  doit  avoir  un  format
+              similaire.  Étant donné que les actions produites par l'ensemble
+              des autres variables d'environnement spécifiques à  man  peuvent
+              être  obtenues  grâce  aux  options  de  la ligne de commande et
+              qu'elles peuvent, de ce fait, être placées dans $MANOPT, il  est
+              prévu  que  ces  variables d'environnement tombent en désuétude.
+              N'oubliez pas que toutes les espaces qui devront être  interpré‐
+              tées comme éléments de l'argument d'une option doivent être pro‐
+              tégées.
+
+       MANWIDTH
+              Si $MANWIDTH est définie, sa valeur est utilisée comme indiquant
+              la  largeur  de  la  ligne  pour  toutes les pages de manuel qui
+              seront formatées. Si elle est vide, les pages de  manuel  seront
+              formatées  avec une largeur de ligne appropriée au terminal uti‐
+              lisé. Cette largeur sera déterminée soit  grâce  à  un  ioctl(2)
+              s'il  est disponible, soit d'après la valeur de $COLUMNS, soit à
+              80 colonnes  si  aucune  indication  n'est  trouvée.  Les  pages
+              « cat »  ne  seront  enregistrées  que  si  la mise en forme par
+              défaut est utilisée, c'est-à-dire quand la largeur de  ligne  du
+              terminal est comprise entre 66 et 80 colonnes.
+
+       MAN_KEEP_FORMATTING
+              Normalement,  quand la sortie n'est pas envoyée directement vers
+              un terminal (comme vers un fichier ou un tube),  les  caractères
+              de mise en page sont effacés pour faciliter la lecture du résul‐
+              tat  sans  outil  spécial.  Cependant,  si  $MAN_KEEP_FORMATTING
+              contient  une  valeur  non nulle, les caractères de mise en page
+              sont gardés. Ce peut être  utile  pour  les  scripts  enveloppes
+              autour  de  man  capable d'interpréter ces caractères de mise en
+              page.
+
+       MAN_KEEP_STDERR
+              Normalement, quand la sortie est  envoyée  directement  vers  un
+              terminal   (habituellement  vers  un  afficheur),  toute  sortie
+              d'erreur de la commande utilisée pour produire les versions for‐
+              matées  des pages de manuel est ignorée pour éviter d'interférer
+              avec l'affichage de la page. Des  programmes  comme  groff  pro‐
+              duisent  souvent  des  messages  d'erreur relativement mineurs à
+              propos de problèmes typographiques comme de mauvais alignements.
+              L'affichage  de  la page de manuel s'en trouve enlaidi et dérou‐
+              tant. Cependant, certains utilisateurs veulent tout de même voir
+              ces  erreurs,  donc  si $MAN_KEEP_FORMATTING contient une valeur
+              non nulle, la sortie d'erreur sera affichée comme d'habitude.
+
+       LANG, LC_MESSAGES
+              Suivant  le  système  et  l'implémentation,  soit  $LANG,   soit
+              $LC_MESSAGES,  soit les deux, seront interrogées pour déterminer
+              la langue ou le dialecte utilisé.  man  affichera  ses  messages
+              dans  cette  langue  ou  ce  dialecte  (s'ils sont disponibles).
+              Consultez setlocale(3) pour plus de précisions.
+
+FICHIERS
+       /etc/manpath.config
+              Fichier de configuration de man-db.
+
+       /usr/share/man
+              Structure hiérarchique de pages de manuel globale
+
+       /usr/share/man/index.(bt|db|dir|pag)
+              Base de données d'indexation globale habituelle.
+
+       /var/cache/man/index.(bt|db|dir|pag)
+              Base de données d'indexation globale, conforme à FHS.
+
+VOIR AUSSI
+       apropos(1), groff(1), less(1),  manpath(1),  nroff(1),  troff(1),  wha‐
+       tis(1),  zsoelim(1),  setlocale(3),  manpath(5),  ascii(7),  latin1(7),
+       man(7), catman(8), mandb(8), le manuel du programme man-db, FSSTND
+
+HISTORIQUE
+       1990,  1991   -   Première   version   écrite   par   John   W.   Eaton
+       (jwe@che.utexas.edu).
+
+       23  Décembre 1992 : Rik Faith (faith@cs.unc.edu) a appliqué les correc‐
+       tifs fournis par Willem Kasdorp (wkasdo@nikhefk.nikef.nl).
+
+       30 avril 1994 - 23  février  2000 :  Wilf.  (G.Wilford@ee.surrey.ac.uk)
+       adéveloppé  et  assuré  la  maintenance  de ce programme avec l'aide de
+       quelques personnes motivées.
+
+       30 octobre 1996 - 30 mars 2001 : Fabrizio Polacco <fpolacco@debian.org>
+       a assuré la maintenance et développé ce programme pour le projet Debian
+       avec l'aide de toute la communauté.
+
+       Depuis le 31 mars 2001 : Colin Watson <cjwatson@debian.org> est  désor‐
+       mais le responsable et le développeur de man-db.
+
+TRADUCTION
+       Cette   traduction   est   maintenue   à   l'aide   de   l'outil   po4a
+       <URL:http://po4a.alioth.debian.org/> par l'équipe francophone  de  tra‐
+       duction de Debian.
+
+       Valéry  Perrin  <valery.perrin.debian@free.fr> le 2 janvier 2006. David
+       Prévot <david@tilapin.org> et l'équipe  francophone  de  traduction  de
+       Debian (2010).
+
+       Veuillez   signaler   toute   erreur   de   traduction  en  écrivant  à
+       <debian-l10n-french@lists.debian.org> ou par un rapport de bogue sur le
+       paquet man-db.
+
+       Vous  pouvez  toujours avoir accès à la version anglaise de ce document
+       en utilisant la commande « man -L C <section> <page_de_man> ».
+
+
+
+2.6.7.1                           2014-04-10                            MAN(1)
